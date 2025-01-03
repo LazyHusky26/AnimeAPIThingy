@@ -1,4 +1,5 @@
 import requests
+import random
 
 base_url = "https://api.jikan.moe/v4"
 
@@ -82,15 +83,50 @@ def genre_recommendations(genre_name):
     if response.status_code == 200:
         data = response.json()
 
-        anime_list = data['data'][:5]
-        print(f"5 anime for the {genre_name} Genre:")
-        for i, anime in enumerate(anime_list,1):
-            print(f"{i}. {anime['title']}")
+        good_anime = []
+        bad_anime = []
+        average_anime = []
+        all_anime = data['data']
+
+        for anime in all_anime:
+            score = anime['score']
+            if score is not None:
+                if score > 7.0:
+                    good_anime.append(anime)
+                elif score < 5.0:
+                    bad_anime.append(anime)
+                else:
+                    average_anime.append(anime)
+        
+        print(f"\nWhich category would you like to view for the genre '{genre_name}'?")
+        print("1. Good Anime)")
+        print("2. Average Anime")
+        print("3. Random Anime")
+
+        choice = input("\nEnter the number corresponding to your choice: ")
+
+        if choice == "1":
+            category_name = "Good Anime"
+            anime_list = good_anime
+        elif choice == "2":
+            category_name = "Average Anime"
+            anime_list = average_anime
+        elif choice == "3":
+            category_name = "Random Anime"
+            anime_list = all_anime
+        else:
+            print("Invalid choice. Please enter a valid number (1-4).")
+            return
+        
+        print(f"\n5 {category_name}:\n")
+        for i, anime in enumerate(random.sample(anime_list, min(5, len(anime_list))), 1):
+            print(f"{i}. {anime['title']} - Score: {anime['score']}")
+
     else:
-        print(f"Error: Could not fetch anime for genre: '{genre_name}'.")
+        print(f"Error: Could not fetch anime for genre '{genre_name}'.")
 
 #def
 
 name = input("Enter the name: ")
-search_anime(name)
-#genre_recommendations(name)
+#search_anime(name)
+genre_recommendations(name)
