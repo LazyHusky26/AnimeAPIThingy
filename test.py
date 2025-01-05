@@ -18,8 +18,6 @@ def search_anime(name):
         print(f"Themes: {', '.join(themes)}")
     else:
         print("Error: Could not fetch data")
-    
-    #anime_recommendations(data)
 
 def anime_recommendations(data):
     anime_id = data['data'][0]['mal_id']
@@ -99,7 +97,7 @@ def genre_recommendations(genre_name):
                     average_anime.append(anime)
         
         print(f"\nWhich category would you like to view for the genre '{genre_name}'?")
-        print("1. Good Anime)")
+        print("1. Good Anime")
         print("2. Average Anime")
         print("3. Random Anime")
 
@@ -115,7 +113,7 @@ def genre_recommendations(genre_name):
             category_name = "Random Anime"
             anime_list = all_anime
         else:
-            print("Invalid choice. Please enter a valid number (1-4).")
+            print("Invalid choice. Please enter a valid number (1-3).")
             return
         
         print(f"\n5 {category_name}:\n")
@@ -125,8 +123,44 @@ def genre_recommendations(genre_name):
     else:
         print(f"Error: Could not fetch anime for genre '{genre_name}'.")
 
-#def
+def main():
+    while True:
+        print("\nWhat would you like to do?")
+        print("1. Anime Search")
+        print("2. Anime Recommendations")
+        #print("3. ")
+        print("4. Exit")
 
-name = input("Enter the name: ")
+        choice = input("\nEnter the number corresponding to your choice: ")
+
+        if choice == '1':
+            name = input("\nEnter the name: ")
+            search_anime(name)
+
+        elif choice == '2':
+            print("\n1. Recommend by Anime")
+            print("2. Recommend by Genre")
+
+            rec_choice = input("\nEnter your choice: ")
+
+            if rec_choice == '1':
+                name = input("Enter Anime Name: ")
+                anime_recommendations(name)
+                pass
+            elif rec_choice == '2':
+                genre = input("Enter Genre: ")
+                genre_recommendations(genre)
+            else:
+                print("Enter a valid choice")
+
+        elif choice == '4':
+            print("Exiting the program....")
+            break
+        else:
+            print("Enter a valid choice")
+
+if __name__ == "__main__":
+    main()
+
 #search_anime(name)
-genre_recommendations(name)
+#genre_recommendations(name)
