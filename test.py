@@ -19,7 +19,10 @@ def search_anime(name):
     else:
         print("Error: Could not fetch data")
 
-def anime_recommendations(data):
+def anime_recommendations(name):
+    response = requests.get(f"{base_url}/anime", params={"q": name})
+    data = response.json()
+
     anime_id = data['data'][0]['mal_id']
     response = requests.get(f"{base_url}/anime/{anime_id}/recommendations")
 
