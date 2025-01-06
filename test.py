@@ -150,9 +150,17 @@ def search_char(name):
             if not anime_list:
                 anime_list.append('Unknown')
 
+            manga_list = []
+            if 'manga' in character:
+                most_popular_manga = character['manga'][0]['manga'].get('title', 'Unknown')
+                manga_list.append(most_popular_manga)
+            if not manga_list:
+                manga_list.append('Unknown')
+
             print(f"Character: {character_name}")
             print(f"Role: {character_role}")
-            print(f"Appears in: {', '.join(anime_list)}")
+            print(f"Appears in (Anime): {', '.join(anime_list)}")
+            print(f"Appears in (Manga): {', '.join(manga_list)}")
 
         else:
             print("Error: Could not fetch full data")
