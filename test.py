@@ -126,12 +126,45 @@ def genre_recommendations(genre_name):
     else:
         print(f"Error: Could not fetch anime for genre '{genre_name}'.")
 
+def search_char(name):
+    response = requests.get(f"{base_url}/characters", params={"q": name})
+    data = response.json()
+
+    if data['data']:
+        character = data['data'][0]
+        character_id = character['mal_id']
+        print(f"Character found: {character['name']} (ID: {character_id})")
+
+        response = requests.get(f"{base_url}/characters/{character_id}/full")
+
+        if response.status_code == 200:
+            data = response.json()
+            character = data['data']
+            character_name = character['name']
+
+            anime_list = []
+            if 'anime' in character:
+                most_popular_anime = character['anime'][0]['anime'].get('title', 'Unknown')
+                anime_list.append(most_popular_anime)
+                character_role = character['anime'][0].get('role', 'Role not available')
+            if not anime_list:
+                anime_list.append('Unknown')
+
+            print(f"Character: {character_name}")
+            print(f"Role: {character_role}")
+            print(f"Appears in: {', '.join(anime_list)}")
+
+        else:
+            print("Error: Could not fetch full data")
+    else:
+        print("Character not found.")
+
 def main():
     while True:
         print("\nWhat would you like to do?")
         print("1. Anime Search")
         print("2. Anime Recommendations")
-        #print("3. ")
+        print("3. Character Search")
         print("4. Exit")
 
         choice = input("\nEnter the number corresponding to your choice: ")
@@ -142,7 +175,7 @@ def main():
 
         elif choice == '2':
             print("\n1. Recommend by Anime")
-            print("2. Recommend by Genre")
+            print("2. Recommend by Genre") #genre kinda broken :(
 
             rec_choice = input("\nEnter your choice: ")
 
@@ -155,6 +188,10 @@ def main():
                 genre_recommendations(genre)
             else:
                 print("Enter a valid choice")
+
+        elif choice == '3':
+            char = input("Enter Character Name: ")
+            search_char(char)
 
         elif choice == '4':
             print("Exiting the program....")
