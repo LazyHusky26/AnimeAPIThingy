@@ -167,13 +167,30 @@ def search_char(name):
     else:
         print("Character not found.")
 
+def search_manga(name):
+    response = requests.get(f"{base_url}/manga", params={"q": name})
+
+    if response.status_code == 200:
+        data = response.json()
+        manga = data['data'][0]
+        genres = [genre['name'] for genre in manga['genres']]
+        themes = [theme['name'] for theme in manga['themes']]
+
+        print(f"Title: {manga['title']}")
+        print(f"Type: {manga['type']}")
+        print(f"Genres: {', '.join(genres)}")
+        print(f"Themes: {', '.join(themes)}")
+    else:
+        print("Error: Could not fetch data")
+
 def main():
     while True:
         print("\nWhat would you like to do?")
         print("1. Anime Search")
         print("2. Anime Recommendations")
-        print("3. Character Search")
-        print("4. Exit")
+        print("3. Manga Search")
+        print("4. Character Search")
+        print("5. Exit")
 
         choice = input("\nEnter the number corresponding to your choice: ")
 
@@ -196,12 +213,16 @@ def main():
                 genre_recommendations(genre)
             else:
                 print("Enter a valid choice")
-
+        
         elif choice == '3':
+            name = input("\nEnter the name: ")
+            search_manga(name)
+
+        elif choice == '4':
             char = input("Enter Character Name: ")
             search_char(char)
 
-        elif choice == '4':
+        elif choice == '5':
             print("Exiting the program....")
             break
         else:
@@ -209,6 +230,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-#search_anime(name)
-#genre_recommendations(name)
