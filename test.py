@@ -12,7 +12,7 @@ def search_anime(name):
         genres = [genre['name'] for genre in anime['genres']]
         themes = [theme['name'] for theme in anime['themes']]
 
-        print(f"Title: {anime['title']}")
+        print(f"\nTitle: {anime['title']}")
         print(f"Type: {anime['type']}")
         print(f"Genres: {', '.join(genres)}")
         print(f"Themes: {', '.join(themes)}")
@@ -176,7 +176,7 @@ def search_manga(name):
         genres = [genre['name'] for genre in manga['genres']]
         themes = [theme['name'] for theme in manga['themes']]
 
-        print(f"Title: {manga['title']}")
+        print(f"\nTitle: {manga['title']}")
         print(f"Type: {manga['type']}")
         print(f"Genres: {', '.join(genres)}")
         print(f"Themes: {', '.join(themes)}")
@@ -186,17 +186,27 @@ def search_manga(name):
 def main():
     while True:
         print("\nWhat would you like to do?")
-        print("1. Anime Search")
-        print("2. Anime Recommendations")
-        print("3. Manga Search")
-        print("4. Character Search")
-        print("5. Exit")
+        print("1. Anime/Manga Search")
+        print("2. Anime/Manga Recommendations")
+        print("3. Character Search")
+        print("4. Exit")
 
         choice = input("\nEnter the number corresponding to your choice: ")
 
         if choice == '1':
-            name = input("\nEnter the name: ")
-            search_anime(name)
+            print("\n1. Anime")
+            print("2. Manga")
+
+            what = input("\nEnter your choice: ")
+
+            if what == '1':
+                name = input("Enter Anime name: ")
+                search_anime(name)
+            elif what == '2':
+                name = input("Enter Manga name: ")
+                search_manga(name)
+            else:
+                print("Enter a valid choice")
 
         elif choice == '2':
             print("\n1. Recommend by Anime")
@@ -213,16 +223,12 @@ def main():
                 genre_recommendations(genre)
             else:
                 print("Enter a valid choice")
-        
-        elif choice == '3':
-            name = input("\nEnter the name: ")
-            search_manga(name)
 
-        elif choice == '4':
+        elif choice == '3':
             char = input("Enter Character Name: ")
             search_char(char)
 
-        elif choice == '5':
+        elif choice == '4':
             print("Exiting the program....")
             break
         else:
