@@ -53,7 +53,7 @@ def manga_recommendations(name):
     else:
         print(f"Error: Could not fetch recommendations for anime ID {manga_id}")
 
-def genre_recommendations(genre_name):
+def genre_recommendations(choice, genre_name):
     genre_ids = {
         "Action": 1,
         "Adventure": 2,
@@ -91,54 +91,68 @@ def genre_recommendations(genre_name):
         "Vampire": 35
     }
 
+    if choice == '1':
+        temp = 'anime'
+    elif choice == '2':
+        temp = 'manga'
+    else:
+        print("Invalid Choice")
+    
     if genre_name not in genre_ids:
         print(f"Error: Genre '{genre_name}' is not valid or not supported.")
         return
 
     genre_id = genre_ids[genre_name]
-    response = requests.get(f"{base_url}/anime", params={"genres": genre_id})
+    response = requests.get(f"{base_url}/{temp}", params={"genres": genre_id})
     
     if response.status_code == 200:
         data = response.json()
 
-        good_anime = []
-        bad_anime = []
-        average_anime = []
-        all_anime = data['data']
+        good_media = []
+        bad_media = []
+        average_media = []
+        all_media = data['data']
 
-        for anime in all_anime:
-            score = anime['score']
+        for temp2 in all_media:
+            score = temp2['score']
             if score is not None:
                 if score > 7.0:
-                    good_anime.append(anime)
+                    good_media.append(temp2)
                 elif score < 5.0:
-                    bad_anime.append(anime)
+                    bad_media.append(temp2)
                 else:
-                    average_anime.append(anime)
+                    average_media.append(temp2)
         
         print(f"\nWhich category would you like to view for the genre '{genre_name}'?")
-        print("1. Good Anime")
-        print("2. Average Anime")
-        print("3. Random Anime")
+        print(f"1. Good {temp.capitalize()}")
+        print(f"2. Average {temp.capitalize()}")
+        print(f"3. Random {temp.capitalize()}")
 
         choice = input("\nEnter the number corresponding to your choice: ")
 
         if choice == "1":
-            category_name = "Good Anime"
-            anime_list = good_anime
+            category_name = f"Good {temp.capitalize()}"
+            media_list = good_media
         elif choice == "2":
-            category_name = "Average Anime"
-            anime_list = average_anime
+            category_name = f"Average {temp.capitalize()}"
+            media_list = average_media
         elif choice == "3":
-            category_name = "Random Anime"
-            anime_list = all_anime
+            category_name = f"Random {temp.capitalize()}"
+            media_list = all_media
         else:
             print("Invalid choice. Please enter a valid number (1-3).")
             return
         
-        print(f"\n5 {category_name}:\n")
-        for i, anime in enumerate(random.sample(anime_list, min(5, len(anime_list))), 1):
-            print(f"{i}. {anime['title']} - Score: {anime['score']}")
+        while True:
+            print(f"\n5 {category_name}:\n")
+            for i, temp in enumerate(random.sample(media_list, min(5, len(media_list))), 1):
+                print(f"{i}. {temp['title']} - Score: {temp['score']}")
+
+            more = input("\nWould you like to see more? (y/n): ").lower()
+            if more == 'n':
+                break
+            elif more != 'y':
+                print("Invalid input.")
 
     else:
         print(f"Error: Could not fetch anime for genre '{genre_name}'.")
@@ -239,8 +253,11 @@ def main():
                 name = input("Enter Manga Name: ")
                 manga_recommendations(name)
             elif rec_choice == '3':
+                print("\n1. Anime")
+                print("2. Manga")
+                ch = input("\nEnter choice: ")
                 genre = input("Enter Genre: ")
-                genre_recommendations(genre)
+                genre_recommendations(ch, genre)
             else:
                 print("Enter a valid choice")
 
@@ -251,6 +268,7 @@ def main():
         elif choice == '4':
             print("Exiting the program....")
             break
+        
         else:
             print("Enter a valid choice")
 
