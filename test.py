@@ -36,6 +36,23 @@ def anime_recommendations(name):
     else:
         print(f"Error: Could not fetch recommendations for anime ID {anime_id}")
 
+def manga_recommendations(name):
+    response = requests.get(f"{base_url}/manga", params={"q": name})
+    data = response.json()
+
+    manga_id = data['data'][0]['mal_id']
+    response = requests.get(f"{base_url}/manga/{manga_id}/recommendations")
+
+    if response.status_code == 200:
+        recommendations_data = response.json()
+        recommendations = recommendations_data['data']
+
+        print(f"Manga Recommendations for '{name}':")
+        for i, rec in enumerate(recommendations[:5], 1):
+            print(f"{i}. {rec['entry']['title']}")
+    else:
+        print(f"Error: Could not fetch recommendations for anime ID {manga_id}")
+
 def genre_recommendations(genre_name):
     genre_ids = {
         "Action": 1,
@@ -210,15 +227,18 @@ def main():
 
         elif choice == '2':
             print("\n1. Recommend by Anime")
-            print("2. Recommend by Genre") #genre kinda broken :(
+            print("2. Recommend by Manga")
+            print("3. Recommend by Genre") #genre kinda broken :(
 
             rec_choice = input("\nEnter your choice: ")
 
             if rec_choice == '1':
                 name = input("Enter Anime Name: ")
                 anime_recommendations(name)
-                pass
             elif rec_choice == '2':
+                name = input("Enter Manga Name: ")
+                manga_recommendations(name)
+            elif rec_choice == '3':
                 genre = input("Enter Genre: ")
                 genre_recommendations(genre)
             else:
