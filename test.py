@@ -242,7 +242,7 @@ def main():
         elif choice == '2':
             print("\n1. Recommend by Anime")
             print("2. Recommend by Manga")
-            print("3. Recommend by Genre") #genre kinda broken :(
+            print("3. Recommend by Genre") #genre kinda wonky :(
 
             rec_choice = input("\nEnter your choice: ")
 
