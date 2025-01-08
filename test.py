@@ -214,13 +214,54 @@ def search_manga(name):
     else:
         print("Error: Could not fetch data")
 
+def top_media():
+    print("\nDo you want to see top anime or manga?:")
+    print("1. Anime")
+    print("2. Manga")
+    choice = input("Enter your choice: ")
+
+    if choice == '1':
+        temp = 'anime'
+    elif choice == '2':
+        temp = 'manga'
+    else:
+        print("Invalid choice.")
+        return
+    
+    response = requests.get(f"{base_url}/top/{temp}")
+
+    if response.status_code == 200:
+        data = response.json()
+        all_anime = data['data']
+        
+        start_index = 0
+        print(f"\nTop {temp.capitalize()}:")
+        while True:
+            for i, anime in enumerate(all_anime[start_index:start_index + 5], 1):
+                print(f"{i}. {anime['title']}")
+
+            more = input("\nWould you like to see more? (y/n): ").lower()
+            if more == 'y':
+                start_index += 5
+                if start_index >= len(all_anime):
+                    print("You've reached the end of the list.")
+                    break
+            elif more == 'n':
+                break
+            else:
+                print("Invalid input.")
+                break
+    else:
+        print(f"Error {response.status_code}: Could not fetch top {temp}.")
+
 def main():
     while True:
         print("\nWhat would you like to do?")
         print("1. Anime/Manga Search")
         print("2. Anime/Manga Recommendations")
         print("3. Character Search")
-        print("4. Exit")
+        print("4. Top Anime/Manga")
+        print("5. Exit")
 
         choice = input("\nEnter the number corresponding to your choice: ")
 
@@ -228,7 +269,7 @@ def main():
             print("\n1. Anime")
             print("2. Manga")
 
-            what = input("\nEnter your choice: ")
+            what = input("Enter your choice: ")
 
             if what == '1':
                 name = input("Enter Anime name: ")
@@ -244,7 +285,7 @@ def main():
             print("2. Recommend by Manga")
             print("3. Recommend by Genre") #genre kinda wonky :(
 
-            rec_choice = input("\nEnter your choice: ")
+            rec_choice = input("Enter your choice: ")
 
             if rec_choice == '1':
                 name = input("Enter Anime Name: ")
@@ -266,6 +307,9 @@ def main():
             search_char(char)
 
         elif choice == '4':
+            top_media()
+        
+        elif choice == '5':
             print("Exiting the program....")
             break
         
