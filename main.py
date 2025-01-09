@@ -157,46 +157,57 @@ def genre_recommendations(choice, genre_name):
     else:
         print(f"Error: Could not fetch anime for genre '{genre_name}'.")
 
+import requests
+
 def search_char(name):
     response = requests.get(f"{base_url}/characters", params={"q": name})
-    data = response.json()
+    
+    if response.status_code == 200:
+        data = response.json()
+        
+        if data['data']:
+            character = data['data'][0]
+            character_id = character['mal_id']
+            print(f"Character found: {character['name']} (ID: {character_id})")
 
-    if data['data']:
-        character = data['data'][0]
-        character_id = character['mal_id']
-        print(f"Character found: {character['name']} (ID: {character_id})")
+            response = requests.get(f"{base_url}/characters/{character_id}/full")
 
-        response = requests.get(f"{base_url}/characters/{character_id}/full")
+            if response.status_code == 200:
+                data = response.json()
+                character = data['data']
+                character_name = character['name']
 
-        if response.status_code == 200:
-            data = response.json()
-            character = data['data']
-            character_name = character['name']
+                anime_list = []
+                character_role = 'Role not available'
+                
+                if 'anime' in character and character['anime']:
+                    most_popular_anime = character['anime'][0]['anime'].get('title', 'Unknown')
+                    anime_list.append(most_popular_anime)
+                    character_role = character['anime'][0].get('role', 'Role not available')
+                
+                if not anime_list:
+                    anime_list.append('Unknown')
 
-            anime_list = []
-            if 'anime' in character:
-                most_popular_anime = character['anime'][0]['anime'].get('title', 'Unknown')
-                anime_list.append(most_popular_anime)
-                character_role = character['anime'][0].get('role', 'Role not available')
-            if not anime_list:
-                anime_list.append('Unknown')
+                manga_list = []
+                if 'manga' in character and character['manga']:
+                    most_popular_manga = character['manga'][0]['manga'].get('title', 'Unknown')
+                    manga_list.append(most_popular_manga)
+                
+                if not manga_list:
+                    manga_list.append('Unknown')
 
-            manga_list = []
-            if 'manga' in character:
-                most_popular_manga = character['manga'][0]['manga'].get('title', 'Unknown')
-                manga_list.append(most_popular_manga)
-            if not manga_list:
-                manga_list.append('Unknown')
+                print(f"Character: {character_name}")
+                print(f"Role: {character_role}")
+                print(f"Appears in (Anime): {', '.join(anime_list)}")
+                print(f"Appears in (Manga): {', '.join(manga_list)}")
 
-            print(f"Character: {character_name}")
-            print(f"Role: {character_role}")
-            print(f"Appears in (Anime): {', '.join(anime_list)}")
-            print(f"Appears in (Manga): {', '.join(manga_list)}")
-
+            else:
+                print("Error: Could not fetch full data.")
         else:
-            print("Error: Could not fetch full data")
+            print("Character not found.")
     else:
-        print("Character not found.")
+        print(f"Error: Could not fetch character data. Status code: {response.status_code}")
+
 
 def search_manga(name):
     response = requests.get(f"{base_url}/manga", params={"q": name})
@@ -296,7 +307,7 @@ def main():
             elif rec_choice == '3':
                 print("\n1. Anime")
                 print("2. Manga")
-                ch = input("\nEnter choice: ")
+                ch = input("Enter choice: ")
                 genre = input("Enter Genre: ")
                 genre_recommendations(ch, genre)
             else:
