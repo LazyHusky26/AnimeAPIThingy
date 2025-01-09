@@ -157,8 +157,6 @@ def genre_recommendations(choice, genre_name):
     else:
         print(f"Error: Could not fetch anime for genre '{genre_name}'.")
 
-import requests
-
 def search_char(name):
     response = requests.get(f"{base_url}/characters", params={"q": name})
     
@@ -207,7 +205,6 @@ def search_char(name):
             print("Character not found.")
     else:
         print(f"Error: Could not fetch character data. Status code: {response.status_code}")
-
 
 def search_manga(name):
     response = requests.get(f"{base_url}/manga", params={"q": name})
